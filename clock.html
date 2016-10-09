@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>clock</title>
+</head>
+<body>
+  <canvas id="canvas">
+    您的浏览器不支持canvas
+  </canvas>
+
+  <script type="text/javascript">
+
+    var canvas=document.querySelector('#canvas');
+    canvas.width=800;
+    canvas.height=800;
+
+    if(canvas.getContext('2d')){
+      var context=canvas.getContext('2d');
+      var timer=setInterval(function(){
+        context.clearRect(0,0,800,800);
+      //剪切
+      context.arc(400,400,300,0,2*Math.PI);
+      context.stroke();
+      context.clip();
+
+      //外圆
+      context.lineWidth=1;
+      context.strokeStyle='#444';
+      context.fillStyle='#eee';
+      context.beginPath();
+      context.arc(400,400,300,0,2*Math.PI);
+      context.closePath();
+      context.fill();
+      context.stroke();
+      //六边形
+      context.strokeStyle='#bbb';
+      context.fillStyle='#000';
+      function drawhexagon(R,left,top){
+        context.beginPath();
+        for(var i=0;i<6;i++){
+          context.lineTo(Math.cos((i*60)/180*Math.PI)*R+left,-Math.sin((i*60)/180*Math.PI)*R+top);
+        }
+        context.closePath();
+        context.fill();
+        context.stroke();
+      }
+      for(var i=0;i<100;i++){
+        for(var j=0;j<100;j++){
+          drawhexagon(10,i*26,j*26);
+        }
+      }
+
+
+      //内圆
+      context.strokeStyle='#333';
+      context.fillStyle='#fff';
+      context.beginPath();
+      context.arc(400,400,260,0,2*Math.PI);
+      context.closePath();
+      context.fill();
+      context.stroke();
+
+      //四个粗针
+      context.fillStyle='black';
+      context.beginPath();
+      context.fillRect(390,140,20,60);
+      context.fillRect(140,390,60,20);
+      context.fillRect(390,600,20,60);
+      context.fillRect(600,390,60,20);
+      context.closePath();
+      context.fill();
+
+      //八个长细刻度
+      context.strokeStyle='black';
+      //起点连成的圆的半径，刻度长度
+      function drawlongpoint(R,longlength){
+
+        context.beginPath();
+        for(var i=0;i<12;i++){
+          if(i%3!=0){
+            context.moveTo(Math.cos((i*30)/180*Math.PI)*R+400,-Math.sin((i*30)/180*Math.PI)*R+400);
+            context.lineTo(Math.cos((i*30)/180*Math.PI)*(R-longlength)+400,-Math.sin((i*30)/180*Math.PI)*(R-longlength)+400);
+          }
+        }
+        context.closePath();
+
+        context.stroke();
+      }
+      drawlongpoint(260,40);
+
+      //48个普通刻度
+
+      function drawshortpoint(R,shortlength){
+        context.beginPath();
+        for(var i=0;i<60;i++){
+          if(i%5!=0){
+            context.moveTo(Math.cos((i*6)/180*Math.PI)*R+400,-Math.sin((i*6)/180*Math.PI)*R+400);
+            context.lineTo(Math.cos((i*6)/180*Math.PI)*(R-shortlength)+400,-Math.sin((i*6)/180*Math.PI)*(R-shortlength)+400);
+          }
+        }
+        context.closePath();
+
+        context.stroke();
+      }
+      drawshortpoint(260,20);
+
+      //圆心
+      context.beginPath();
+      context.fillStyle='black';
+      context.arc(400,400,10,0,2*Math.PI);
+      context.closePath();
+      context.fill();
+      //时针
+      // context.fillStyle='black';
+      // context.beginPath();
+      // // context.save();
+      // // context.rotate(h*30);
+      // context.fillRect(395,395,10,150);
+      // // context.restore();
+      // context.closePath();
+      // context.fill();
+
+      //分针
+      // context.fillStyle='black';
+      // context.beginPath();
+      // context.fillRect(397,397,6,180);
+      // context.closePath();
+      // context.fill();
+
+      //秒针
+      // context.strokeStyle='black';
+      // context.beginPath();
+      // context.strokeRect(399,399,2,200);
+      // context.closePath();
+      // context.stroke();
+
+
+        // clearInterval(timer);
+        //时钟
+        var myDate=new Date();
+        var h = myDate.getHours();
+        var m = myDate.getMinutes();
+        var s = myDate.getSeconds();
+        function judge(time){
+          if(time>12){
+            time=time-12;
+          }
+          return time;
+        }
+        h=judge(h);
+        console.log(h);//9
+        console.log(m);//9
+        //秒针
+        context.strokeStyle='pink';
+        context.lineWidth=1;
+        context.beginPath();
+        context.moveTo(400,400);
+        context.lineTo(Math.cos((90-6*s)/180*Math.PI)*200+400,-Math.sin((90-6*s)/180*Math.PI)*200+400);
+        context.closePath();
+        context.stroke();
+        //分针
+        context.strokeStyle='black';
+        context.lineWidth=5;
+        context.beginPath();
+        context.moveTo(400,400);
+        context.lineTo(Math.cos((90-m*6-0.1*s)/180*Math.PI)*180+400,-Math.sin((90-m*6-0.1*s)/180*Math.PI)*180+400);
+        context.closePath();
+        context.stroke();
+        //时针
+        context.strokeStyle='black';
+        context.lineWidth=10;
+        context.beginPath();
+        context.moveTo(400,400);
+        context.lineTo(Math.cos((90-h*30-1/2*m)/180*Math.PI)*100+400,-Math.sin((90-h*30-1/2*m)/180*Math.PI)*100+400);
+        context.closePath();
+        context.stroke();
+
+      },1000);
+
+    }else{
+      alert("您的浏览器不支持canvas");
+    }
+
+
+  </script>
+
+</body>
+</html>
